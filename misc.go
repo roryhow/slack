@@ -204,6 +204,7 @@ func doPost(ctx context.Context, client httpClient, req *http.Request, parser re
 	if err != nil {
 		return err
 	}
+	logResponse(resp, d)
 	defer resp.Body.Close()
 
 	err = checkStatusCode(resp, d)
