@@ -199,6 +199,7 @@ func postWithMultipartResponse(ctx context.Context, client httpClient, path, nam
 
 func doPost(ctx context.Context, client httpClient, req *http.Request, parser responseParser, d Debug) error {
 	req = req.WithContext(ctx)
+	logRequest(req, d)
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
@@ -253,6 +254,18 @@ func getResource(ctx context.Context, client httpClient, endpoint, token string,
 func parseAdminResponse(ctx context.Context, client httpClient, method string, teamName string, values url.Values, intf interface{}, d Debug) error {
 	endpoint := fmt.Sprintf(WEBAPIURLFormat, teamName, method, time.Now().Unix())
 	return postForm(ctx, client, endpoint, values, intf, d)
+}
+
+func logRequest(req *http.Request, d Debug) error {
+	if d.Debug() {
+		text, err := httputil.DumpRequest(req, true)
+		if err != nil {
+			return err
+		}
+		d.Debugln(string(text))
+	}
+
+	return nil
 }
 
 func logResponse(resp *http.Response, d Debug) error {
